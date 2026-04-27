@@ -1,4 +1,4 @@
-# AIoT Course - Project 2 (Human Gesture Recognition Project)
+# AIoT Course - Project 2 (Human Activity Recognition Project)
 
 **An End-to-end Artificial Intelligence of Things Project**
 
@@ -13,8 +13,8 @@
 
 In this project, you are prompted to create an end-to-end Artificial 
 Intelligence of Things (AIoT) procedure in order to recognize a set of human 
-movements automatically. This problem is identified as Human Gesture 
-Recognition (HGR), which is actually the technology that uses sensors to read 
+movements automatically. This problem is identified as Human Activity 
+Activity (HAR), which is actually the technology that uses sensors to read 
 and interpret body movements as commands or labeled actions. Nowadays, HGR 
 has multiple uses in various domains, such as healthcare, industry, gaming, 
 etc. In the automotive industry, for instance, this capability allows drivers 
