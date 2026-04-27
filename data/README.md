@@ -3,8 +3,7 @@
 **This folder holds the dataset that feeds the rest of the project.** The 
 hardware that the project was originally built around (the Mbientlab 
 MetaMotionR wristband) is not available for this offering, so you will work 
-with the **PAMAP2 Physical Activity Monitoring** dataset instead. The raw 
-files are bundled here under `PAMAP2_Dataset/`.
+with the **PAMAP2 Physical Activity Monitoring** dataset instead. Download data from here: [PAMAP2](https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring)
 
 ## Folder layout
 
