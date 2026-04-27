@@ -1,73 +1,84 @@
 # Data local repository
 
-**In this folder, please, put the data that are related to the gestures 
-collection process before you upload it to the database.**
+**This folder holds the dataset that feeds the rest of the project.** The 
+hardware that the project was originally built around (the Mbientlab 
+MetaMotionR wristband) is not available for this offering, so you will work 
+with the **PAMAP2 Physical Activity Monitoring** dataset instead. The raw 
+files are bundled here under `PAMAP2_Dataset/`.
 
-The accelerometer and gyroscope data from the wristband are streamed over a 
-Bluetooth connection and will be stored in CSV file format. Specifically, each 
-of the CSV files contains the session performed by the user gesture, as well 
-as a coding base that is defined based. The CSV files’ names, specifically, 
-are determined in such a way that except for the annotation of the session 
-with respect to a gesture ID. They also include other fields related to 
-metadata from each session, which help in the later processing of the data 
-each file includes. Additionally, this filename format provides a way to 
-achieve a more accurate analysis of the collected data. Each field is separated 
-by ”_” so it can be easily then extracted in the analysis process. The list 
-below contains a description of each of the CSV file’s naming fields, in the 
-order they follow, when saving a session. Each field corresponds to the 
-appropriate metadata that is used later in the statistical analysis of the 
-sessions and gestures that were collected, accordingly.
-
-* Gesture ID: It refers to the gesture identifier. It could be the following: 
-  * scroll-up-thumb, scroll-down-thumb, swipe-left-thumb, swipe-right-thumb 
-  * scroll-up-index, scroll-down-index, swipe-left-index, swipe-right-index 
-  * texting-two, texting-single 
-* Hand: It denotes the hand where the participant wears the wristband, right 
-or left hand. 0 stands for the right hand while 1 is for the left hand. 
-* Sampling Frequency: The recording data sampling in Hz. 
-* Sensor Type: This field lists the sensor whose recordings are contained in 
-the current file, which in our case is the accelerometer and gyroscope, and 
-can be  identified as”AccGyr”, “Acc”, or “Gyr” in the filename. 
-* Primary Hand: If the hand that the participant wore the wristband is the 
-primary hand the value 1 is inserted, or 0 if it is in the non-primary hand 
-of the user (secondary hand). 
-* Spontaneous: Corresponds to the movement’s impulsivity. The 0 value means 
-that the gesture that is performed is not spontaneous, while it defaults to 1 
-in case it is. 
-* User ID: For each user, the participant ID is an incremental number, e.g., 
-01, 02, 03. 
-* Unique ID Hash: A unique ID is created to identify the particular 
-session/gesture. It could be the MongoDB’s Object ID (_id).
-
-The directory should contain subdirectories each one having the name of the 
-corresponding class.
-
-An example of a sessions instance could be:
-
-`scroll-up-thumb_0_50_AccGyr_1_1_01_61964f51d11ec26c3bbde60b.csv`
-
-As a guide, you can study the publication [3], which is available in the 
-"References" section of the `README.md` file in the root folder.
-
-Then, the data folder structure can have the following format:
+## Folder layout
 
 ```
-.
-└── data/
-    ├──
-    ├── scroll-up-thumb/
-    │   ├── scroll-up-thumb_0_50_AccGyr_1_1_01_61964f51d11ec26c3bbde60b.csv
-    │   ├── scroll-up-thumb_0_50_AccGyr_1_1_01_7982f51d11ec26c3be60b875.csv
-    │   └── ..
-    ├── scroll-up-down/
-    │   ├── scroll-up-down_0_50_AccGyr_1_1_01_12432f51d11ec26c3b944jd0.csv
-    │   ├── scroll-up-down_0_50_AccGyr_1_1_02_47563f51d11ec26c3bb4210k.csv
-    │   └── .
-    └── class ...
+data/
+├── README.md                  (this file)
+└── PAMAP2_Dataset/
+    ├── readme.pdf                     (canonical dataset description — read this first)
+    ├── DataCollectionProtocol.pdf
+    ├── DescriptionOfActivities.pdf
+    ├── PerformedActivitiesSummary.pdf
+    ├── subjectInformation.pdf
+    ├── Protocol/                      (9 subjects, all required activities)
+    │   ├── subject101.dat
+    │   ├── ...
+    │   └── subject109.dat
+    └── Optional/                      (5 subjects, additional activities)
+        ├── subject101.dat
+        ├── ...
+        └── subject109.dat
 ```
 
-Each document in the MongoDB database should have the following schema, if you 
-utilize ony the Accelerometer:
+Do **not** rename or restructure the `PAMAP2_Dataset/` directory — your code 
+should read it in place.
+
+## Raw `.dat` file format
+
+Each `.dat` file is a space-separated text file with **54 columns** sampled 
+at **100 Hz**. Column groups (1-indexed, as in the PAMAP2 readme):
+
+| Columns | Content                                                     |
+|---------|-------------------------------------------------------------|
+| 1       | timestamp (seconds)                                         |
+| 2       | activity ID (see the table in the root `README.md`)         |
+| 3       | heart rate (bpm) — **do not use**, sampled at 9 Hz          |
+| 4–20    | IMU **hand/wrist**: temperature, acc±16g, acc±6g, gyro, mag, orientation |
+| 21–37   | IMU **chest**: same layout                                  |
+| 38–54   | IMU **ankle**: same layout                                  |
+
+For each IMU, use the **±16g accelerometer** (3 axes) and the **gyroscope** 
+(3 axes) as the default channels. The orientation columns are flagged as 
+invalid in the dataset documentation — ignore them. Heart rate and any other 
+biometric channel are out of scope for this project.
+
+Missing samples (dropped wireless packets) are encoded as `NaN` and must be 
+handled explicitly during preprocessing.
+
+## Ingestion pipeline
+
+The data flow is:
+
+```
+.dat files  ──parse──▶  per-(subject, activity) segments  ──insert──▶  MongoDB  ──fetch──▶  notebooks
+```
+
+Concretely:
+
+1. Read each `.dat` file with `pandas` (whitespace-delimited, no header).
+2. Drop rows with `activity_id == 0` (transient periods between activities).
+3. Group the remaining rows by `(subject_id, activity_id)` into contiguous 
+   recording segments.
+4. Restrict columns to the IMU channels you decided to use (start with the 
+   hand/wrist accelerometer and gyroscope only — see "Sensor Selection 
+   Strategy" in the root `README.md`).
+5. Convert each segment into a MongoDB document using the schema below and 
+   insert it into your collection.
+6. From the analysis notebooks, **fetch documents from MongoDB** rather than 
+   re-reading the raw files.
+
+## MongoDB document schema
+
+Each MongoDB document corresponds to one contiguous segment of one activity 
+performed by one subject. The default schema (hand/wrist IMU, accelerometer 
++ gyroscope) is:
 
 ```json
 {
@@ -75,22 +86,42 @@ utilize ony the Accelerometer:
   "data": {
     "acc_x": ["array", "of", "values"],
     "acc_y": ["array", "of", "values"],
-    "acc_z": ["array", "of", "values"]
+    "acc_z": ["array", "of", "values"],
+    "gyr_x": ["array", "of", "values"],
+    "gyr_y": ["array", "of", "values"],
+    "gyr_z": ["array", "of", "values"]
   },
-  "gesture_id": "The label of the instance",
-  "hand": 0,
-  "sr": 100,
+  "activity_id": 4,
+  "activity_label": "walking",
+  "subject": "101",
+  "split": "Protocol",
+  "imu_location": "hand",
   "sensor": "AccGyr",
-  "primary": 1,
-  "spontaneous": 1,
-  "user": "01",
-  "datetime": "MongoDB datetime object (it can be generated with the datetime.datetime.now() function"
+  "sr": 100,
+  "datetime": "MongoDB datetime object (it can be generated with the datetime.datetime.now() function)"
 }
 ```
 
-If you are using gyroscope or both accelerometer and gyroscope, 
-the following order and naming of the sensor keys should be defined:
+Field notes:
 
-* for gyroscope: `gyr_x`, `gyr_y`, `gyr_z` for the three axes
-* for accelerometer **and** gyroscope: `acc_x`, `acc_y`, `acc_z`, `gyr_x`, 
-`gyr_y`, `gyr_z` for the six axes
+* `activity_id` — the integer label as it appears in the `.dat` file. 
+  `activity_label` is the human-readable name from the activity table in the 
+  root `README.md`.
+* `subject` — the file's subject identifier (e.g. `"101"` … `"109"`).
+* `split` — `"Protocol"` or `"Optional"`, matching the source subdirectory.
+* `imu_location` — `"hand"`, `"chest"`, or `"ankle"`. Use one document per 
+  IMU location; do **not** concatenate IMUs into a single document.
+* `sensor` — `"Acc"`, `"Gyr"`, or `"AccGyr"`. If you later expand to the 
+  magnetometer, use `"AccGyrMag"` and add `mag_x`, `mag_y`, `mag_z` keys 
+  using the same axis order convention.
+* `sr` — sampling rate in Hz. Must be `100` (downsample any channel that 
+  isn't natively at 100 Hz before inserting).
+
+If you are using only the gyroscope for an experiment, drop the `acc_*` keys 
+and keep `gyr_x`, `gyr_y`, `gyr_z`. The same axis-naming convention applies 
+to the accelerometer-only case (`acc_x`, `acc_y`, `acc_z`).
+
+## Quick reference — activity labels
+
+See the activity tables in the root `README.md`. Activity ID `0` is 
+*transient* and must be excluded before insertion.

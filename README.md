@@ -12,40 +12,25 @@
 ## Project Description
 
 In this project, you are prompted to create an end-to-end Artificial 
-Intelligence of Things (AIoT) procedure in order to recognize a set of gestures 
-automatically. This problem is identified as Human Gesture Recognition (HGR), 
-which is actually the technology that uses sensors to read and interpret hand 
-gestures as commands. Nowadays, HGR has multiple uses in various domains, such 
-as healthcare, industry, gaming, etc. In the automotive industry, for instance, 
-this capability allows drivers and passengers to interact with the vehicle — 
-usually to control the infotainment system without touching any buttons or 
-screens.
+Intelligence of Things (AIoT) procedure in order to recognize a set of human 
+movements automatically. This problem is identified as Human Gesture 
+Recognition (HGR), which is actually the technology that uses sensors to read 
+and interpret body movements as commands or labeled actions. Nowadays, HGR 
+has multiple uses in various domains, such as healthcare, industry, gaming, 
+etc. In the automotive industry, for instance, this capability allows drivers 
+and passengers to interact with the vehicle — usually to control the 
+infotainment system without touching any buttons or screens.
 
-In particular, you will take advantage of the Mbientlab’s sensorial device, 
-MetaMotionR research sensor kit [1], and its wristband [2], which is a 
+Ideally, this project would be carried out using Mbientlab’s sensorial device, 
+the MetaMotionR research sensor kit [1], and its wristband [2], which is a 
 wrist-worn device that provides recorded (logging) or real-time (streaming) 
 sensor data. The sensor kit embeds the Bosch BMI160 Inertial Measurement Unit 
-(IMU), which is a small, low-power, low-noise 16-bit inertial measurement unit 
-designed for use in mobile applications like augmented reality or indoor 
-navigation, which require highly accurate, real-time sensor kinesiological 
-data. In full operation mode, the user can enable both the accelerometer and 
-gyroscope sensors to collect the movement data. The device, the wristband, and 
-the embedded IMU are presented in Figure 1. 
-
-For the data collection procedure, you can utilize the mobile and desktop 
-open-source applications (MetaWear, MetaBase) that Mbientlab provides in the 
-Apple Store (Mac, iPhone), the Play Store, and the Windows Store:
-
-* [Mbientlab MetaWear and MetaBase Apps for iOS and macOS on App Store](https://apps.apple.com/us/developer/mbientlab-inc/id920878580)
-* [Mbientlab MetaWear App on Play Store](https://play.google.com/store/apps/details?id=com.mbientlab.metawear.app)
-* [Mbientlab MetaBase App on Play Store](https://play.google.com/store/apps/details?id=com.mbientlab.metawear.metabase)
-* [Mbientlab MetaBase on Microsoft Store](https://apps.microsoft.com/store/detail/metabase/9NBLGGH4TXJ3)
-
-
-As an alternative option, you can use the MetaWear APIs the company provides 
-in Java, Swift, JavaScript, Python, and C++ programming languages:
-
-* [MetaWear APIs](https://mbientlab.com/tutorials/MetaWearAPI.html)
+(IMU), a small, low-power, low-noise 16-bit IMU designed for use in mobile 
+applications like augmented reality or indoor navigation, which require 
+highly accurate, real-time kinesiological data. In full operation mode, the 
+user can enable both the accelerometer and gyroscope sensors to collect 
+movement data. The device, the wristband, and the embedded IMU are presented 
+in Figure 1.
 
 ![](img/AIoT_course_MMR.png)
 
@@ -53,7 +38,23 @@ in Java, Swift, JavaScript, Python, and C++ programming languages:
 b) its wristband, and, c) the embedded Bosch BMI160 Inertial Measurement Unit 
 (IMU).*
 
-After collecting the data, you will proceed with data engineering and 
+### Hardware Substitution: the PAMAP2 Dataset
+
+**The wearable hardware is not available for this offering of the course.** 
+Instead of collecting your own data, you will work with the publicly 
+available **PAMAP2 Physical Activity Monitoring** dataset [11], which 
+contains IMU recordings (accelerometer, gyroscope, magnetometer) sampled at 
+**100 Hz** from 9 subjects performing 18 physical activities. The dataset 
+provides three IMUs per subject (placed on the **hand/wrist**, **chest**, 
+and **ankle**), so the wrist-worn aspect of the original project can still 
+be reproduced.
+
+The dataset is bundled with this repository under `data/PAMAP2_Dataset/`. 
+You should treat PAMAP2 as if you had collected it yourselves: parse it, 
+ingest it into MongoDB, fetch it back for analysis, and run the full ML 
+pipeline on it.
+
+After ingesting the data, you will proceed with data engineering and 
 preparation methodologies in order to transform the data into a suitable 
 format capable of training the AI models. Then, you will select between a set 
 of supervised-learning Machine Learning models for the learning procedure, 
@@ -67,96 +68,60 @@ ML models
 It is suggested to read the whole papers that are provided in the "References" 
 section in order to better understand the identification scenario.
 
-## Gesture Definition and Execution
+## Activities
 
-**For the learning scenario, you will perform the activities described below:** 
+**For the learning scenario, you will use the activities recorded in PAMAP2.** 
+The dataset defines the following classes (the integer is the activity ID 
+stored in the `.dat` files):
 
-*Using the smart wearable device, you will be recording standard smartphone 
-gestures commonly used while navigating social media. Please follow these 
-descriptions and guidelines carefully to ensure uniform data collection across 
-all groups.*
+**Protocol activities** (all 9 subjects performed these — `data/PAMAP2_Dataset/Protocol/`):
 
-You will collect data for five distinct gestures. Ensure the subject performs 
-these as naturally as they would when browsing a social media feed 
-(e.g., Instagram, TikTok, or X).
+| ID | Activity            | ID | Activity            |
+|----|---------------------|----|---------------------|
+| 1  | lying               | 7  | Nordic walking      |
+| 2  | sitting             | 12 | ascending stairs    |
+| 3  | standing            | 13 | descending stairs   |
+| 4  | walking             | 16 | vacuum cleaning     |
+| 5  | running             | 17 | ironing             |
+| 6  | cycling             | 24 | rope jumping        |
 
-1. Scroll Up
-   * Action: The user places their finger on the screen and drags it downward 
-   to move the on-screen content up (revealing older or lower content). 
-   * Requirement: Define and record whether the subject is using their thumb 
-   or index finger.
+**Optional activities** (a subset of subjects — `data/PAMAP2_Dataset/Optional/`):
 
-2. Scroll Down 
-   * Action: The user places their finger on the screen and drags it upward to 
-   move the on-screen content down (revealing newer or higher content). 
-   * Requirement: Define and record whether the subject is using their thumb or 
-   index finger.
+| ID | Activity        | ID | Activity        |
+|----|-----------------|----|-----------------|
+| 9  | watching TV     | 18 | folding laundry |
+| 10 | computer work   | 19 | house cleaning  |
+| 11 | car driving     | 20 | playing soccer  |
 
-3. Swipe Left
-   * Action: A horizontal swipe where the finger starts on the right side of 
-   the screen and quickly glides to the left (commonly used to view the next 
-   photo in a carousel or move to the next tab). 
-   * Requirement: Define and record whether the subject is using their thumb 
-   or index finger.
+Activity ID `0` corresponds to *transient* periods between activities and 
+must be **filtered out** before any analysis.
 
-4. Swipe Right 
-   * Action: A horizontal swipe where the finger starts on the left side of 
-   the screen and quickly glides to the right (commonly used to go back a page 
-   or view a previous photo). 
-   * Requirement: Define and record whether the subject is using their thumb 
-   or index finger.
+**Use every activity available** to you in the chosen split (Protocol, and 
+Optional where it is present). Inspect how many instances each class 
+contributes after windowing — class imbalance is part of the analysis you 
+will need to interpret in your report.
 
-5. Texting
-   * Action: Typing a standard message on the smartphone's virtual keyboard. 
-   * Requirement: The subject should type naturally and continuously (e.g., 
-   copying a provided block of text or writing stream-of-consciousness) for 
-   the recording intervals. Two-handed thumb typing or single-handed typing 
-   is acceptable, but the typing style should ideally be noted in your project 
-   log.
+## Sensor Selection Strategy
 
+Each PAMAP2 subject wears three IMUs (hand/wrist, chest, ankle). Each IMU 
+exposes a 3-axis accelerometer (use the ±16g full-scale readings), a 3-axis 
+gyroscope, a 3-axis magnetometer, and a temperature reading. There is also a 
+heart-rate channel — **do not use biometric channels (e.g. heart rate); this 
+project is restricted to inertial sensing.**
 
-## Instructions for data collection and annotation
+You will explore sensor configurations incrementally:
 
-### Part 1: Requirements & Structure
+1. **Start with the hand/wrist IMU only**, using just the accelerometer and 
+   gyroscope (6 axes total). This mirrors the original wrist-worn scenario.
+2. **If the wrist-only configuration is not sufficient** to reach acceptable 
+   classification performance, expand to the chest and/or ankle IMUs and 
+   **compare** the results. Report the per-configuration metrics and 
+   discuss what each additional sensor contributes.
 
-Based on your gestures collection definition, please use the accelerometer 
-and/or gyroscope.
-
-1. You familiarize yourself with the wearable and select one or more of its sensors 
-that indicate movement, i.e., accelerometer and/or gyroscope.
-2. To properly collect the instances, you must be careful that the data contains 
-exactly the instances of interest. This means that the recording of the data 
-collection must start while you perform the gesture repetitively, and 
-terminate the recording before you stop performing the gesture.
-3. Time Requirements & Structure:
-   * Time per Gesture: 5 minutes per subject. 
-   * Total Time per Subject: 25 minutes (5 gestures × 5 minutes each). 
-   * Total Time per Group: 1 hour and 15 minutes (75 minutes), assuming 3 
-   subjects per group.
-4. You collect and annotate the data based on the gesture classes you want to 
-train the AI model. 
-5. Visualize the sensor data in the following ways: 
-   * Accelerometer data (3-axis).
-   * Gyroscope data (3-axis).
-   * Accelerometer and Gyroscope data (6-axis).
-
-**Note: Collect a representative dataset, meaning each class should have 
-almost the same time-length of instances in total.**
-
-### Part 2: Recording Guidelines
-
-To maintain data integrity, do not mix gestures in a single recording.
-
-* Standalone Collection: Each recording must capture strictly one specific 
-gesture at a time. 
-* Repetitive Cycles: Break the 5-minute requirement into manageable, repetitive 
-cycles. *Example: Record 20 seconds of continuous "Scrolling Up", stop the 
-recording, take a brief pause, and repeat another 20-second recording until 
-you have accumulated the required 5 minutes of data for that specific gesture.*
-* Documentation: For scrolling and swiping, you must strictly define and log 
-whether the subject is using their thumb (typical of one-handed use) or their 
-index finger (typical of two-handed use). The subject should remain consistent 
-with the chosen finger for the duration of that specific gesture's recording.
+The hand IMU is sampled at 100 Hz, which matches the project's sampling-rate 
+requirement. If you choose to add the magnetometer or any channel sampled at 
+a different rate, **downsample** to 100 Hz so the per-window feature 
+dimensionality stays consistent.
 
 ## Configuration
 
@@ -173,18 +138,37 @@ Additionally, the file should comprise all parameters regarding the MongoDB
 host, the database name, the collection name, as well as parameters about the 
 data engineering and the learning processes.
 
-## Dataset creation
+## Dataset Ingestion
+
+The PAMAP2 dataset is shipped with this repository under 
+`data/PAMAP2_Dataset/`. The data flow you must implement is:
+
+```
+.dat files  ──parse──▶  MongoDB documents  ──load──▶  MongoDB  ──fetch──▶  analysis notebooks
+```
 
 1. Follow the folder and files structure guideline, which can be found 
-in `data/README.md`.
-2. The data that is related to the gestures collection process before you upload 
-it to the database will be stored inside the `data` folder.
+   in `data/README.md`.
+2. Read the dataset documentation (`data/PAMAP2_Dataset/readme.pdf`, 
+   `DataCollectionProtocol.pdf`, `DescriptionOfActivities.pdf`, 
+   `subjectInformation.pdf`, `PerformedActivitiesSummary.pdf`) so you 
+   understand the column layout and the recording protocol.
 3. Instantiate a `mongod` primary daemon process for the MongoDB system.
 4. Based on the instructions in `aiot_dataset_creation_sample.ipynb`:
-   * Create the database and the collection where you will save your data. 
-   * Transform the data into the proper MongoDB document format. 
-   * Upload the data to your collection.
-* The sampling frequency (sampling rate) should be at 100Hz.
+   * Parse each `.dat` file into per-activity, per-subject segments. 
+     Discard any rows whose activity ID is `0` (transient).
+   * Replace `NaN` values produced by the dataset's missing-sample marker 
+     according to a strategy you justify (interpolation, drop, etc.).
+   * Transform the segments into the MongoDB document schema described in 
+     `data/README.md`.
+   * Create the database and the collection where you will save your data.
+   * Upload the documents to your collection.
+5. From your analysis notebooks, **fetch** the documents back from MongoDB 
+   rather than re-reading the raw `.dat` files — the rest of the pipeline 
+   should treat MongoDB as the single source of truth.
+
+* The sampling frequency (sampling rate) for the working dataset must be 
+  **100 Hz**. Downsample any channel that is recorded at a different rate.
 
 Note: Use the MongoDB Compass GUI to check your database and collections:
 
@@ -223,7 +207,8 @@ process, for each class.
 * Filter the data with a low-pass filter at a frequency of *X* Hz.
 * Visualize a time-series instance of the transformed dataset to see the 
 effect of the filter on the signal. 
-* Detect outliers and/or find missing values.
+* Detect outliers and/or find missing values (PAMAP2 includes `NaN` markers 
+  for dropped wireless packets — handle these explicitly).
 
 ### Data Transformation
 
@@ -237,15 +222,18 @@ Analysis (PCA).
 
 ### Data Preparation
 
-1. Split the data into train and test sets. Two subjects from the team will 
-compose the train set and one the test set.
+1. Split the data **by subject** into train and test sets, using a 
+   **6–7 subjects for training and 2–3 subjects for testing** scheme. The 
+   split must be subject-disjoint — no subject may appear in both sets — so 
+   the evaluation reflects generalization to new users.
 2. Use a scaling algorithm to scale the data into a standard value range 
 (for instance, Standardization, Min Max Normalization). Exploit Python's 
-`scikit-learn` library.
+`scikit-learn` library. Fit the scaler **only on the training subjects** 
+and apply it to the test subjects.
 
 ## Learning Process (ML Modeling)
 
-1. Select a supervised Machine Learning approach to perform the gesture 
+1. Select a supervised Machine Learning approach to perform the activity 
 recognition scenario, by exploiting Python's `scikit-learn` library. For 
 instance, you can use the Support Vector Machine (SVM) algorithm, Random Forests, 
 or other models.
@@ -257,6 +245,9 @@ classification results.
 4. Explore and understand the data adequately and provide your insights.
 5. Fine-tune the ML model (e.g., use Exhaustive Grid Search algorithm). Exploit 
 Python's `scikit-learn` library.
+6. **Repeat the evaluation across the sensor configurations described in 
+   "Sensor Selection Strategy"** (wrist-only first; expand to chest/ankle if 
+   wrist-only is insufficient) and discuss the trade-offs.
 
 ## Report
 
@@ -264,24 +255,28 @@ Python's `scikit-learn` library.
 (e.g., Google Drive or OneDrive) that will contain**:
 
 * The **code** of the project.
-* The collected **dataset** with its annotated metadata is in the `data` folder.
-* A **2-page report** related to the data collection procedure, the classes, 
-how the data was annotated, the controlled environment, how you trained the
-AI model, and interpreting also the results of the evaluation process.
+* The **MongoDB export** of your processed dataset (e.g., a `mongodump` 
+  archive) so we can reproduce the analysis. The raw PAMAP2 `.dat` files do 
+  **not** need to be re-included — they are public and already available in 
+  this repository.
+* A **2-page report** related to the dataset and its activities, the 
+  preprocessing decisions you made (handling of `NaN` values, downsampling, 
+  filtering, windowing), the sensor configurations you compared, how you 
+  trained the AI model, and an interpretation of the evaluation results.
 
 Some additional useful information about the report is provided below.
 
 Code Information:
-* The code used to convert the CSV data into a format (data engineering, data 
-preparation), capable of training the models.
+* The code used to parse PAMAP2 `.dat` files, ingest them into MongoDB, and 
+  convert the documents into a format capable of training the models.
 * The code used to train and evaluate the models. 
 * The high-level code could be in notebooks, while the functions could be in scripting 
 format.
 * `README.md` file with instructions on how to automatically run the code 
-should be delivered: data loading, data processing, model training, and model 
-evaluation process.
-* The `README.md` should describe clearly how you performed the gestures' 
-collection procedure (maybe a Figure too).
+should be delivered: data ingestion, data processing, model training, and 
+model evaluation process.
+* The `README.md` should describe clearly which subjects, activities, and 
+  sensor configurations were used.
 * The code should be well-documented and commented.
 * Provide your results of the training and data exploration using `.png` files.
 
@@ -297,7 +292,7 @@ identification.
 Notebooks and at a more abstract level in the report document (`.docx` file - 
 see the instructions below).
   * Compare and explain the differences in the performance metrics between the 
-  different ML solutions.
+  different ML solutions **and between the sensor configurations**.
 * If the `.docx` file is not possible, you can use a `PDF` file.
 * The documentation should be in English and should be written in a 
 professional manner.
@@ -375,6 +370,10 @@ Marina del Rey, Los Angeles, CA, USA, 2022.
 
 [10] Tzamalis, Pantelis, "Python Data Science and Machine Learning Tutorials", [Online]. 
 Available: https://github.com/tzamalisp/data-science-and-machine-learning-tutorials
+
+[11] Reiss, Attila, and Didier Stricker. "Introducing a new benchmarked dataset for activity monitoring." In 2012 16th 
+International Symposium on Wearable Computers, pp. 108-109. IEEE, 2012. Dataset: 
+https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring
 
 
 ## Contact
