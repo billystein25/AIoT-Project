@@ -46,8 +46,7 @@ available **PAMAP2 Physical Activity Monitoring** dataset [11], which
 contains IMU recordings (accelerometer, gyroscope, magnetometer) sampled at 
 **100 Hz** from 9 subjects performing 18 physical activities. The dataset 
 provides three IMUs per subject (placed on the **hand/wrist**, **chest**, 
-and **ankle**), so the wrist-worn aspect of the original project can still 
-be reproduced.
+and **ankle**).
 
 You should treat PAMAP2 as if you had collected it yourselves: parse it, 
 ingest it into MongoDB, fetch it back for analysis, and run the full ML 
