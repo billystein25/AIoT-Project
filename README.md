@@ -38,7 +38,7 @@ in Figure 1.
 b) its wristband, and, c) the embedded Bosch BMI160 Inertial Measurement Unit 
 (IMU).*
 
-### Hardware Substitution: the PAMAP2 Dataset
+### The [PAMAP2 Dataset](https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring)
 
 **The wearable hardware is not available for this offering of the course.** 
 Instead of collecting your own data, you will work with the publicly 
@@ -49,7 +49,6 @@ provides three IMUs per subject (placed on the **hand/wrist**, **chest**,
 and **ankle**), so the wrist-worn aspect of the original project can still 
 be reproduced.
 
-The dataset is bundled with this repository under `data/PAMAP2_Dataset/`. 
 You should treat PAMAP2 as if you had collected it yourselves: parse it, 
 ingest it into MongoDB, fetch it back for analysis, and run the full ML 
 pipeline on it.
@@ -60,10 +59,11 @@ format capable of training the AI models. Then, you will select between a set
 of supervised-learning Machine Learning models for the learning procedure, 
 and finally you will evaluate the AI models with respect to their performance.
 
-You will train the ML models in two ways:
-1. by feeding the ML algorithms with segmented-windowed data
-2. by generating a set of features (feature engineering), and then, feeding the
-ML models
+You will train the ML models using two approaches:
+1. Feed the ML algorithms with segmented, windowed data.
+2. Perform feature engineering by generating a set of features, selecting (and justifying) the most suitable ones, and then training the ML models using these features.
+
+Finally, compare the results obtained by training on the full set of extracted features versus the selected subset.
 
 It is suggested to read the whole papers that are provided in the "References" 
 section in order to better understand the identification scenario.
@@ -74,7 +74,7 @@ section in order to better understand the identification scenario.
 The dataset defines the following classes (the integer is the activity ID 
 stored in the `.dat` files):
 
-**Protocol activities** (all 9 subjects performed these — `data/PAMAP2_Dataset/Protocol/`):
+**Protocol activities** (all 9 subjects performed these — `PAMAP2_Dataset/Protocol/`):
 
 | ID | Activity            | ID | Activity            |
 |----|---------------------|----|---------------------|
@@ -85,7 +85,7 @@ stored in the `.dat` files):
 | 5  | running             | 17 | ironing             |
 | 6  | cycling             | 24 | rope jumping        |
 
-**Optional activities** (a subset of subjects — `data/PAMAP2_Dataset/Optional/`):
+**Optional activities** (a subset of subjects — `PAMAP2_Dataset/Optional/`):
 
 | ID | Activity        | ID | Activity        |
 |----|-----------------|----|-----------------|
@@ -118,8 +118,7 @@ You will explore sensor configurations incrementally:
    **compare** the results. Report the per-configuration metrics and 
    discuss what each additional sensor contributes.
 
-The hand IMU is sampled at 100 Hz, which matches the project's sampling-rate 
-requirement. If you choose to add the magnetometer or any channel sampled at 
+The hand IMU is sampled at 100 Hz. If you choose to add the magnetometer or any channel sampled at 
 a different rate, **downsample** to 100 Hz so the per-window feature 
 dimensionality stays consistent.
 
@@ -141,7 +140,7 @@ data engineering and the learning processes.
 ## Dataset Ingestion
 
 The PAMAP2 dataset is shipped with this repository under 
-`data/PAMAP2_Dataset/`. The data flow you must implement is:
+`PAMAP2_Dataset/`. The data flow you must implement is:
 
 ```
 .dat files  ──parse──▶  MongoDB documents  ──load──▶  MongoDB  ──fetch──▶  analysis notebooks
@@ -149,7 +148,7 @@ The PAMAP2 dataset is shipped with this repository under
 
 1. Follow the folder and files structure guideline, which can be found 
    in `data/README.md`.
-2. Read the dataset documentation (`data/PAMAP2_Dataset/readme.pdf`, 
+2. Read the dataset documentation (`PAMAP2_Dataset/readme.pdf`, 
    `DataCollectionProtocol.pdf`, `DescriptionOfActivities.pdf`, 
    `subjectInformation.pdf`, `PerformedActivitiesSummary.pdf`) so you 
    understand the column layout and the recording protocol.
@@ -216,8 +215,7 @@ effect of the filter on the signal.
 * Provide the input vector after feature engineering. Which features are 
 discriminative and useful for the model? 
 * For the extracted feature set, determine which features to keep (feature selection).
-* Perform dimensionality reduction (if needed) by using Principal Component 
-Analysis (PCA).
+* Perform dimensionality reduction (if needed).
 
 
 ### Data Preparation
@@ -317,6 +315,7 @@ seaborn, scikit-learn, and other Data Science stuff, you can read and
 experiment with the tutorials that can be found here:
 
 * [Python Data Science and Machine Learning Tutorials](https://github.com/tzamalisp/data-science-and-machine-learning-tutorials)
+* [Human Activity / Gesture Recognition Tutorials](https://machinelearningmastery.com/how-to-load-and-explore-a-standard-human-activity-recognition-problem/)
 
 ## Important Notes (READ THIS CAREFULLY)
 
@@ -386,5 +385,5 @@ Dr. Pantelis Tzamalis, *Engineering Manager*
 
 George Kontogiannis, *Ph.D. Candidate*
 * email: [george.k.kontogiannis@gmail.com](mailto:george.k.kontogiannis@gmail.com)
-* GitHub: [https://github.com/gkontogiannhs](https://github.com/gkontogiannhs)
+* GitHub: [https://github.com/kontogiannisg](https://github.com/kontogiannisg)
 * Social: [https://www.linkedin.com/in/george-kontogiannis/](https://www.linkedin.com/in/george-kontogiannis/)
