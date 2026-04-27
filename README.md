@@ -1,11 +1,11 @@
-# AIoT Course - Project 2 (Human Activity Recognition Project)
+# AIoT Course - Project 2+ (Human Activity Recognition Project)
 
 **An End-to-end Artificial Intelligence of Things Project**
 
 ## About this Project
 
 * A team of a max of **3 students** is mandatory for each project
-* Announcement date: **20 April, 2026** 
+* Announcement date: **28 April, 2026** 
 * Delivery Date: **25 May, 2026, 23:59**
 * Grade: **40%**
 
@@ -15,35 +15,14 @@ In this project, you are prompted to create an end-to-end Artificial
 Intelligence of Things (AIoT) procedure in order to recognize a set of human 
 movements automatically. This problem is identified as Human Activity 
 Activity (HAR), which is actually the technology that uses sensors to read 
-and interpret body movements as commands or labeled actions. Nowadays, HGR 
-has multiple uses in various domains, such as healthcare, industry, gaming, 
-etc. In the automotive industry, for instance, this capability allows drivers 
-and passengers to interact with the vehicle — usually to control the 
-infotainment system without touching any buttons or screens.
-
-Ideally, this project would be carried out using Mbientlab’s sensorial device, 
-the MetaMotionR research sensor kit [1], and its wristband [2], which is a 
-wrist-worn device that provides recorded (logging) or real-time (streaming) 
-sensor data. The sensor kit embeds the Bosch BMI160 Inertial Measurement Unit 
-(IMU), a small, low-power, low-noise 16-bit IMU designed for use in mobile 
-applications like augmented reality or indoor navigation, which require 
-highly accurate, real-time kinesiological data. In full operation mode, the 
-user can enable both the accelerometer and gyroscope sensors to collect 
-movement data. The device, the wristband, and the embedded IMU are presented 
-in Figure 1.
-
-![](img/AIoT_course_MMR.png)
-
-*Figure 1. From left to right. a) the MetaMotionR research sensor kit, 
-b) its wristband, and, c) the embedded Bosch BMI160 Inertial Measurement Unit 
-(IMU).*
+and interpret body movements as commands or labeled actions.
 
 ### The [PAMAP2 Dataset](https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring)
 
 **The wearable hardware is not available for this offering of the course.** 
 Instead of collecting your own data, you will work with the publicly 
-available **PAMAP2 Physical Activity Monitoring** dataset [11], which 
-contains IMU recordings (accelerometer, gyroscope, magnetometer) sampled at 
+available **PAMAP2 Physical Activity Monitoring** dataset [1], which 
+contains IMU recordings (accelerometer, gyroscope, magnetometer) [2] sampled at 
 **100 Hz** from 9 subjects performing 18 physical activities. The dataset 
 provides three IMUs per subject (placed on the **hand/wrist**, **chest**, 
 and **ankle**).
@@ -333,9 +312,11 @@ libraries you use and disable compatibility issues between them.
 
 ## References
 
-[1] "MMR – MetaMotionR," Mbientlab, [Online]. Available: https://mbientlab.com/store/metamotionr/.
+[1] Reiss, Attila, and Didier Stricker. "Introducing a new benchmarked dataset for activity monitoring." In 2012 16th 
+International Symposium on Wearable Computers, pp. 108-109. IEEE, 2012. Dataset: 
+https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring
 
-[2] Mbientlab, "Wrist Band Kit for MMC and MMR," Mbientlab, [Online]. Available: https://mbientlab.com/store/wristband-sensor-research-kit/.
+[2] Colibri, "A Wireless Micro Inertial Measurement Unit (IMU)", [Online]. Available: [https://mbientlab.com/store/wristband-sensor-research-kit/.](https://www.scribd.com/document/362775494/Colibri-Wireless-IMU)
 
 [3] Tzamalis, Pantelis, Sotiris Nikoletseas, and Paul G. Spirakis. "Gestureset: Public domain dataset for human gesture 
 recognition using wrist-worn devices: A preliminary version." In 2023 19th International Conference on Distributed 
@@ -368,10 +349,6 @@ Marina del Rey, Los Angeles, CA, USA, 2022.
 
 [10] Tzamalis, Pantelis, "Python Data Science and Machine Learning Tutorials", [Online]. 
 Available: https://github.com/tzamalisp/data-science-and-machine-learning-tutorials
-
-[11] Reiss, Attila, and Didier Stricker. "Introducing a new benchmarked dataset for activity monitoring." In 2012 16th 
-International Symposium on Wearable Computers, pp. 108-109. IEEE, 2012. Dataset: 
-https://archive.ics.uci.edu/dataset/231/pamap2+physical+activity+monitoring
 
 
 ## Contact
