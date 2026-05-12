@@ -221,5 +221,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Client
-.vscode/
+
+# Local-Client
+.vscode/*
+data/PAMAP2_Dataset/*
