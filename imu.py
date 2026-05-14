@@ -1,23 +1,24 @@
 from numpy import nan
+from numpy import float64
 
 
 class Vector3:
-    x: float
-    y: float
-    z: float
-    def __init__(self, x: float, y, float, z: float):
+    x: float64
+    y: float64
+    z: float64
+    def __init__(self, x: float64, y, float64, z: float64):
         self.x = x
         self.y = y
         self.z = z
 
 
 class IMUSensoryData:
-    temperature: float
+    temperature: float64
     accelerometer_16: Vector3
     accelerometer_6: Vector3
     gyroscope: Vector3
     magnetometer: Vector3
-    def __init__(self, temperature: float, accelerometer_16: Vector3, accelerometer_6: Vector3, gyroscope: Vector3, magnetometer: Vector3):
+    def __init__(self, temperature: float64, accelerometer_16: Vector3, accelerometer_6: Vector3, gyroscope: Vector3, magnetometer: Vector3):
         self.temperature = temperature
         self.accelerometer_16 = accelerometer_16
         self.accelerometer_6 = accelerometer_6
@@ -26,13 +27,13 @@ class IMUSensoryData:
 
 
 class SubjectRow:
-    timestamp: float
-    activity: float
-    # heart_rate: float
+    timestamp: float64
+    activity: float64
+    # heart_rate: float64
     imu_hand: IMUSensoryData
     imu_chest: IMUSensoryData
     imu_ankle: IMUSensoryData
-    def __init__(self, timestamp: float, activity: float, imu_hand: IMUSensoryData, imu_chest: IMUSensoryData, imu_ankle: IMUSensoryData):
+    def __init__(self, timestamp: float64, activity: float64, imu_hand: IMUSensoryData, imu_chest: IMUSensoryData, imu_ankle: IMUSensoryData):
         self.timestamp = timestamp
         self.activity = activity
         self.imu_hand = imu_hand
