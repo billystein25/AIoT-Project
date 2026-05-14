@@ -6,7 +6,8 @@ class Vector3:
     x: float64
     y: float64
     z: float64
-    def __init__(self, x: float64, y, float64, z: float64):
+    
+    def __init__(self, x: float64, y: float64, z: float64):
         self.x = x
         self.y = y
         self.z = z
