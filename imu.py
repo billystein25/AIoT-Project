@@ -48,7 +48,7 @@ class SubjectRow:
     def __str__(self):
         return_str: str = ""
         return_str += "timestamp\tactivity\timu_hand\t\t\t\t\timu_chest\t\t\t\t\timu_ankle\n"
-        return_str += str(self.timestamp) + "\t\t" + str(self.activity) + "\t\ttemperature:\t" + str(self.imu_hand.temperature) + "\t\t\t\ttemperature:\t" + str(self.imu_ankle.temperature) + "\t\t\t\ttemperature:\t" + str(self.imu_ankle.temperature) + "\n"
+        return_str += str(self.timestamp) + "\t\t" + str(self.activity) + "\t\ttemperature:\t" + str(self.imu_hand.temperature) + "\t\t\t\ttemperature:\t" + str(self.imu_chest.temperature) + "\t\t\t\ttemperature:\t" + str(self.imu_ankle.temperature) + "\n"
         return_str += "\t\t\t\tacc_16:\t" + str(self.imu_hand.accelerometer_16) + "\t\tacc_16:\t" + str(self.imu_chest.accelerometer_16) + "\t\tacc_16:\t" + str(self.imu_ankle.accelerometer_16) + "\n"
         return_str += "\t\t\t\tacc_6:\t" + str(self.imu_hand.accelerometer_6) + "\t\tacc_6:\t" + str(self.imu_chest.accelerometer_6) + "\t\tacc_6:\t" + str(self.imu_ankle.accelerometer_6) + "\n"
         return_str += "\t\t\t\tgyro:\t" + str(self.imu_hand.gyroscope) + "\tgyro:\t" + str(self.imu_chest.gyroscope) + "\tgyro:\t" + str(self.imu_ankle.gyroscope) + "\n"
