@@ -29,21 +29,21 @@ def get_data_rows(file: str) -> list[SubjectRow]:
                 # timestamp, activity
                 row[0], row[1],
                 # imu_hand:
-                IMUSensoryData(
+                IMUSensorData(
                     # temp, acc_16,                         acc_6
                     row[3], Vector3(row[4], row[5], row[6]), Vector3(row[7], row[8], row[9]),
                     # gyro,                             mag
                     Vector3(row[10], row[11], row[12]), Vector3(row[13], row[14], row[15])
                 ),
                 # imu_chest:
-                IMUSensoryData(
+                IMUSensorData(
                     # temp, acc_16,                             acc_6
                     row[20], Vector3(row[21], row[22], row[23]), Vector3(row[24], row[25], row[26]),
                     # gyro,                             mag
                     Vector3(row[27], row[28], row[29]), Vector3(row[30], row[31], row[32])
                 ),
                 # imu_ankle:
-                IMUSensoryData(
+                IMUSensorData(
                     # temp, acc_16,                             acc_6
                     row[37], Vector3(row[38], row[39], row[40]), Vector3(row[41], row[42], row[43]),
                     # gyro,                             mag

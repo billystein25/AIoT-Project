@@ -15,7 +15,7 @@ class Vector3:
         return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
 
 
-class IMUSensoryData:
+class IMUSensorData:
     temperature: float64
     accelerometer_16: Vector3
     accelerometer_6: Vector3
@@ -34,11 +34,11 @@ class SubjectRow:
     timestamp: float64
     activity: float64
     # heart_rate: float64
-    imu_hand: IMUSensoryData
-    imu_chest: IMUSensoryData
-    imu_ankle: IMUSensoryData
+    imu_hand: IMUSensorData
+    imu_chest: IMUSensorData
+    imu_ankle: IMUSensorData
     
-    def __init__(self, timestamp: float64, activity: float64, imu_hand: IMUSensoryData, imu_chest: IMUSensoryData, imu_ankle: IMUSensoryData):
+    def __init__(self, timestamp: float64, activity: float64, imu_hand: IMUSensorData, imu_chest: IMUSensorData, imu_ankle: IMUSensorData):
         self.timestamp = timestamp
         self.activity = activity
         self.imu_hand = imu_hand
