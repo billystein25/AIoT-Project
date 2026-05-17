@@ -109,7 +109,7 @@ Field notes:
 * `subject` — the file's subject identifier (e.g. `"101"` … `"109"`).
 * `split` — `"Protocol"` or `"Optional"`, matching the source subdirectory.
 * `imu_location` — `"hand"`, `"chest"`, or `"ankle"`. Use one document per 
-  IMU location; do **not** concatenate IMUs into a single document.
+  IMU location; do **not** concatenate IMUs into a single document.--
 * `sensor` — `"Acc"`, `"Gyr"`, or `"AccGyr"`. If you later expand to the 
   magnetometer, use `"AccGyrMag"` and add `mag_x`, `mag_y`, `mag_z` keys 
   using the same axis order convention.

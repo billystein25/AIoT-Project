@@ -73,3 +73,82 @@ def get_all_subjects_in_dir(dir: str) -> list[SubjectData]:
         return_ls.append(get_subject_data(file))
     
     return return_ls
+from datetime import datetime
+
+def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
+    """
+    Groups raw sequential rows into per-activity segments for the HAND IMU only
+    and outputs them matching the exact target MongoDB document schema.
+    """
+    documents = []
+    
+    if not subject_data.data_ls:
+        return documents
+
+    # Map to translate PAMAP2 activity IDs to labels
+    activity_labels = {
+        1: "lying", 2: "sitting", 3: "standing", 4: "walking", 
+        5: "running", 6: "cycling", 7: "Nordic walking",
+        12: "ascending stairs", 13: "descending stairs", 
+        16: "vacuum cleaning", 17: "ironing", 24: "rope jumping"
+    }
+
+    # Step 1: Group the rows into continuous activity blocks
+    segments = []
+    current_activity = subject_data.data_ls[0].activity
+    current_block = []
+
+    for row in subject_data.data_ls:
+        if row.activity == current_activity:
+            current_block.append(row)
+        else:
+            # Activity changed! Save the finished block and start a new one
+            segments.append((current_activity, current_block))
+            current_activity = row.activity
+            current_block = [row]
+            
+    # Capture the final block
+    if current_block:
+        segments.append((current_activity, current_block))
+
+    # Step 2: Build the specialized schema for each continuous segment (HAND only)
+    for activity_id, block_rows in segments:
+        label = activity_labels.get(int(activity_id), "unknown")
+        
+        # Initialize lists to accumulate the hand sensor arrays
+        acc_x, acc_y, acc_z = [], [], []
+        gyr_x, gyr_y, gyr_z = [], [], []
+        
+        for row in block_rows:
+            imu = row.imu_hand  # Explicitly targeting hand data
+            
+            # Append coordinates to their respective series
+            acc_x.append(imu.acc_16.x)
+            acc_y.append(imu.acc_16.y)
+            acc_z.append(imu.acc_16.z)
+            gyr_x.append(imu.gyro.x)
+            gyr_y.append(imu.gyro.y)
+            gyr_z.append(imu.gyro.z)
+        
+        # Construct the exact dictionary structure shown in your JSON blueprint
+        doc = {
+            "data": {
+                "acc_x": acc_x,
+                "acc_y": acc_y,
+                "acc_z": acc_z,
+                "gyr_x": gyr_x,
+                "gyr_y": gyr_y,
+                "gyr_z": gyr_z
+            },
+            "activity_id": int(activity_id),
+            "activity_label": label,
+            "subject": str(subject_data.id),
+            "split": "Protocol",
+            "imu_location": "hand",
+            "sensor": "AccGyr",
+            "sr": 100,
+            "datetime": datetime.now() # Generates a native BSON MongoDB datetime object
+        }
+        documents.append(doc)
+            
+    return documents
