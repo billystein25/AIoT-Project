@@ -82,7 +82,7 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
     """
     documents = []
     
-    if not subject_data.data_ls:
+    if not subject_data.data_rows:
         return documents
 
     # Map to translate PAMAP2 activity IDs to labels
@@ -95,10 +95,10 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
 
     # Step 1: Group the rows into continuous activity blocks
     segments = []
-    current_activity = subject_data.data_ls[0].activity
+    current_activity = subject_data.data_rows[0].activity
     current_block = []
 
-    for row in subject_data.data_ls:
+    for row in subject_data.data_rows:
         if row.activity == current_activity:
             current_block.append(row)
         else:
@@ -123,13 +123,12 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
             imu = row.imu_hand  # Explicitly targeting hand data
             
             # Append coordinates to their respective series
-            acc_x.append(imu.acc_16.x)
-            acc_y.append(imu.acc_16.y)
-            acc_z.append(imu.acc_16.z)
-            gyr_x.append(imu.gyro.x)
-            gyr_y.append(imu.gyro.y)
-            gyr_z.append(imu.gyro.z)
-        
+            acc_x.append(imu.accelerometer_16.x)
+            acc_y.append(imu.accelerometer_16.y)
+            acc_z.append(imu.accelerometer_16.z)
+            gyr_x.append(imu.gyroscope.x)
+            gyr_y.append(imu.gyroscope.y)
+            gyr_z.append(imu.gyroscope.z)
         # Construct the exact dictionary structure shown in your JSON blueprint
         doc = {
             "data": {
