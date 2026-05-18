@@ -6,7 +6,7 @@ client: "mongodb://localhost:27017"
 db: "aiot_monitoring_db"
 
 # db collection
-col: "hand_tracking_data"
+col: "hand_tracking_data2"
 
 
 #--------------------- Dataframe Instantiation ----------------------

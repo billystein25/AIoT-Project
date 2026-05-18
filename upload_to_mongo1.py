@@ -2,7 +2,7 @@ import os
 import yaml
 import pymongo
 
-# 1. IMPORT YOUR CUSTOM PARSER FUNCTIONS
+
 from data_parser import get_subject_data, transform_subject_to_docs
 
 def load_config():
@@ -34,18 +34,18 @@ def main():
             
             print(f"Parsing text file structure: {file_name}...")
             
-            # 2. RUN YOUR PARSER ENGINE TO GENERATE STRUCURED OBJECTS
-            # This calls get_data_rows() and get_subject_id() under the hood
+            # WE RUN OUR PARSER ENGINE TO GENERATE STRUCURED OBJECTS
+            # This calls get_data_rows() and get_subject_id() 
             subject_object = get_subject_data(full_file_path)
             
-            # 3. TRANSFORM OBJECT ARRAYS INTO MONGO-READY JSON SCHEMAS
+            # THEN WETRANSFORM OBJECT ARRAYS INTO MONGO-READY JSON SCHEMAS
             docs_batch = transform_subject_to_docs(subject_object)
             
             # Adjust the document split metadata field dynamically based on current folder
             for doc in docs_batch:
                 doc["split"] = split
             
-            # 4. STREAM CLEAN DATA TO MONGODB
+            # WE STREAM CLEAN DATA TO MONGODB
             if docs_batch:
                 print(f"Uploading {len(docs_batch)} structured activity blocks...")
                 collection.insert_many(docs_batch, ordered=False)

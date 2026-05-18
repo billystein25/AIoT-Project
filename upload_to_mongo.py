@@ -17,7 +17,7 @@ ACTIVITY_MAP = {
     19: "house cleaning", 20: "playing soccer", 24: "rope jumping"
 }
 
-# Define column indexes for your professor's df_rebase renaming tool
+# Define column indexes for df_rebase renaming tool
 # Target columns must match the exact length of your reference names list
 TARGET_COLS = [4, 5, 6, 10, 11, 12, 1] 
 REF_COLS = ["acc_x", "acc_y", "acc_z", "gyr_x", "gyr_y", "gyr_z", "activity_id"]
@@ -29,14 +29,14 @@ def load_config():
 def process_file_with_rebase(file_path, subject, split_name):
     """
     Reads a raw .dat file, maps columns with df_rebase, segments contiguous blocks,
-    and returns a list of formatted documents matching the course requirements.
+    and returns a list of formatted documents.
     """
     print(f"Processing Subject {subject} ({split_name})...")
     
     # 1. Load the raw space-separated text data matrix
     raw_df = pd.read_csv(file_path, sep=r"\s+", header=None)
     
-    # 2. Reorder and rename columns using the course's rebase utility
+    # 2. Reorder and rename columns using the rebase utility
     processed_df = df_rebase(raw_df, target_list=TARGET_COLS, ref_list=REF_COLS)
     
     if processed_df is None or processed_df.empty:
@@ -56,7 +56,7 @@ def process_file_with_rebase(file_path, subject, split_name):
         segment = processed_df.iloc[start_idx:end_idx]
         current_activity = int(segment.iloc[0]["activity_id"])
         
-        # Rule: Skip transient states (activity_id == 0)
+        # Skip transient states (activity_id == 0)
         if current_activity == 0:
             continue
             
