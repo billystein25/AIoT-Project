@@ -75,7 +75,7 @@ def get_all_subjects_in_dir(dir: str) -> list[SubjectData]:
     return return_ls
 from datetime import datetime
 
-def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
+def transform_subject_to_docs(subject_data: SubjectData,split_name: str) -> list[dict]:
     """
     Groups raw sequential rows into per-activity segments for the HAND IMU only
     and outputs them matching the exact target MongoDB document schema.
@@ -115,39 +115,43 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
     for activity_id, block_rows in segments:
         label = activity_labels.get(int(activity_id), "unknown")
         
+        imu_targets = ["hand", "chest", "ankle"]
         # Initialize lists to accumulate the hand sensor arrays
-        acc_x, acc_y, acc_z = [], [], []
-        gyr_x, gyr_y, gyr_z = [], [], []
+        for loc in imu_targets:
+            acc_x, acc_y, acc_z = [], [], []
+            gyr_x, gyr_y, gyr_z = [], [], []
         
-        for row in block_rows:
-            imu = row.imu_hand  
-            
-            # Append coordinates to their respective series
-            acc_x.append(imu.accelerometer_16.x)
-            acc_y.append(imu.accelerometer_16.y)
-            acc_z.append(imu.accelerometer_16.z)
-            gyr_x.append(imu.gyroscope.x)
-            gyr_y.append(imu.gyroscope.y)
-            gyr_z.append(imu.gyroscope.z)
+        
        
-        doc = {
-            "data": {
-                "acc_x": acc_x,
-                "acc_y": acc_y,
-                "acc_z": acc_z,
-                "gyr_x": gyr_x,
-                "gyr_y": gyr_y,
-                "gyr_z": gyr_z
-            },
-            "activity_id": int(activity_id),
-            "activity_label": label,
-            "subject": str(subject_data.id),
-            "split": "Protocol",
-            "imu_location": "hand",
-            "sensor": "AccGyr",
-            "sr": 100,
-            "datetime": datetime.now() 
-        }
-        documents.append(doc)
+            for row in block_rows:
+                imu = getattr(row, f"imu_{loc}")
+                
+                # Append coordinates to their respective series
+                acc_x.append(imu.accelerometer_16.x)
+                acc_y.append(imu.accelerometer_16.y)
+                acc_z.append(imu.accelerometer_16.z)
+                gyr_x.append(imu.gyroscope.x)
+                gyr_y.append(imu.gyroscope.y)
+                gyr_z.append(imu.gyroscope.z)
+        
+            doc = {
+                "data": {
+                    "acc_x": acc_x,
+                    "acc_y": acc_y,
+                    "acc_z": acc_z,
+                    "gyr_x": gyr_x,
+                    "gyr_y": gyr_y,
+                    "gyr_z": gyr_z
+                },
+                "activity_id": int(activity_id),
+                "activity_label": label,
+                "subject": str(subject_data.id),
+                "split": str(split_name),
+                "imu_location": loc,
+                "sensor": "AccGyr",
+                "sr": 100,
+                "datetime": datetime.now() 
+            }
+            documents.append(doc)
             
     return documents
