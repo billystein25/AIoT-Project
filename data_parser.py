@@ -93,7 +93,7 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
         16: "vacuum cleaning", 17: "ironing", 24: "rope jumping"
     }
 
-    # Step 1: Group the rows into continuous activity blocks
+    # Group the rows into continuous activity blocks
     segments = []
     current_activity = subject_data.data_rows[0].activity
     current_block = []
@@ -111,7 +111,7 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
     if current_block:
         segments.append((current_activity, current_block))
 
-    # Step 2: Build the specialized schema for each continuous segment (HAND only)
+    # Build the specialized schema for each continuous segment (HAND only)
     for activity_id, block_rows in segments:
         label = activity_labels.get(int(activity_id), "unknown")
         
@@ -120,7 +120,7 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
         gyr_x, gyr_y, gyr_z = [], [], []
         
         for row in block_rows:
-            imu = row.imu_hand  # Explicitly targeting hand data
+            imu = row.imu_hand  
             
             # Append coordinates to their respective series
             acc_x.append(imu.accelerometer_16.x)
@@ -129,7 +129,7 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
             gyr_x.append(imu.gyroscope.x)
             gyr_y.append(imu.gyroscope.y)
             gyr_z.append(imu.gyroscope.z)
-        # Construct the exact dictionary structure shown in your JSON blueprint
+       
         doc = {
             "data": {
                 "acc_x": acc_x,
@@ -146,7 +146,7 @@ def transform_subject_to_docs(subject_data: SubjectData) -> list[dict]:
             "imu_location": "hand",
             "sensor": "AccGyr",
             "sr": 100,
-            "datetime": datetime.now() # Generates a native BSON MongoDB datetime object
+            "datetime": datetime.now() 
         }
         documents.append(doc)
             
