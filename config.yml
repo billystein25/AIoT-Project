@@ -18,9 +18,9 @@ rename: ["acc_x", "acc_y", "acc_z"]
 #--------------------- Dataset Local Storage ----------------------
 # dataset location
 data_path:  # Change this line in your config.yml file to double backslashes:
-data_path: "C:\\Users\\user\\Documents\\ΠΑΝΕΠΙΣΤΗΜΙΟ\\LABAIOT\\AIoT-Project\\data\\PAMAP2_Dataset"
+data_path: "G:\\AIoT-Project\\data\\PAMAP2_Dataset"
 # single data instance location path to experiment with the data engineering process and visualization
-#single_instance_path: "C:\\ Users\\ user\\ Documents\\ ΠΑΝΕΠΙΣΤΗΜΙΟ\\LABAIOT\\ AIoT-Project\\ data\\ PAMAP2_Dataset\\ Protocol\\ subject101.dat"
+single_instance_path: "G:\\AIoT-Project\\data\\PAMAP2_Dataset\\Protocol\\subject101.dat"
 
 
 #--------------------- Data Engineering ----------------------
