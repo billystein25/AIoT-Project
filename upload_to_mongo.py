@@ -12,7 +12,6 @@ def load_config():
 def main():
     config = load_config()
     
-    # Establish database engine wire protocol
     client = pymongo.MongoClient(config["client"])
     db = client[config["db"]]
     collection = db[config["col"]]
