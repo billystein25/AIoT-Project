@@ -35,7 +35,7 @@ def main():
             
             subject_object = get_subject_data(full_file_path)
             
-            docs_batch = transform_subject_to_docs(subject_object)
+            docs_batch = transform_subject_to_docs(subject_object, split_name=split)
             
             for doc in docs_batch:
                 doc["split"] = split
