@@ -234,3 +234,65 @@ def list_files_in_folder(folder_path) -> list:
                 files_list.append(f)
 
     return files_list
+
+#------------------------------------------------------------------------------
+def make_pairs(segments_df, config):
+    """Applies sliding window segmentation to each segment and pairs each
+    window with its metadata (activity label and subject).
+
+    Iterates over each continuous activity segment in the DataFrame,
+    extracts the raw time-series signal, applies the sliding window
+    algorithm, and tags every produced window with its corresponding
+    activity label and subject ID.
+     
+     Returns:
+        List of dicts, one per produced window. Each dict contains:
+            - 'window'         : DataFrame of shape (ws, n_axes)
+            - 'activity_label' : str, the activity label of the segment
+            - 'subject'        : str, the subject ID of the segment
+
+    
+    """
+    pairs = []
+    for _, segment_row in segments_df.iterrows():
+        segment_signal_df = pd.DataFrame(segment_row['data'])
+        window_df = sliding_window_pd(        
+            segment_signal_df,                 
+            ws=config["sliding_window"]["ws"],
+            overlap=config["sliding_window"]["overlap"],
+            w_type=config["sliding_window"]["w_type"],
+            w_center=config["sliding_window"]["w_center"],
+            print_stats=config["sliding_window"]["print_stats"]
+        )
+        for win in window_df:
+            pairs.append({
+                "window":         win,
+                "activity_label": segment_row['activity_label'],
+                "subject":        segment_row['subject']
+            })
+    return pairs
+
+def filter_pairs(windowpairs, config):
+    """Applies low-pass filter to each window in the pairs list.
+
+    Args:
+        windowpairs: List of dicts from make_pairs() with 'window' key.
+        config: Parsed config.yml dict containing filter parameters.
+
+    Returns:
+        List of filtered DataFrames parallel to windowpairs.
+    """
+    filtered_list = []
+    for pair in windowpairs:
+        win = pair["window"]
+        filtered_df = pd.DataFrame(index=win.index, columns=win.columns, dtype=float)
+        for col in win.columns:
+            filtered_df[col] = apply_filter(
+                win[col].to_numpy(),
+                order=config["filter"]["order"],
+                wn=config["filter"]["wn"],
+                filter_type=config["filter"]["type"]
+            )
+        filtered_list.append(filtered_df)
+    return filtered_list
+
