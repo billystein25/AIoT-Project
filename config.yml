@@ -1,12 +1,12 @@
 #--------------------- DB ----------------------
 # DB Connection with the uri (host)
-client: "INSERT THE HOST"
+client: "mongodb://localhost:27017"
 
 # db name
-db: "NAME YOUR DB"
+db: "aiot_monitoring_db"
 
 # db collection
-col: "NAME YOUR COLLECTION"
+col: "tracking_data"
 
 
 #--------------------- Dataframe Instantiation ----------------------
@@ -17,9 +17,10 @@ rename: ["acc_x", "acc_y", "acc_z"]
 
 #--------------------- Dataset Local Storage ----------------------
 # dataset location
-data_path: "PATH TO THE DATASET"
+data_path:  # Change this line in your config.yml file to double backslashes:
+data_path: "C:\\Users\\user\\Documents\\ΠΑΝΕΠΙΣΤΗΜΙΟ\\LABAIOT\\AIoT-Project\\data\\PAMAP2_Dataset"
 # single data instance location path to experiment with the data engineering process and visualization
-single_instance_path: "PATH TO INSTANCE"
+#single_instance_path: "C:\\ Users\\ user\\ Documents\\ ΠΑΝΕΠΙΣΤΗΜΙΟ\\LABAIOT\\ AIoT-Project\\ data\\ PAMAP2_Dataset\\ Protocol\\ subject101.dat"
 
 
 #--------------------- Data Engineering ----------------------
