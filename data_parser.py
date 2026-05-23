@@ -1,21 +1,35 @@
-from imu import *
+import os
 import pandas as pd
 from pandas import DataFrame
 from numpy import ndarray
-import os
+from datetime import datetime
+
+from imu import *
 
 
 def get_subject_id(filename: str) -> int:
-    """
-    Returns the id of the subject as an integer. Assumes the name of the file ends in '*XXX.dat'
+    """Returns the id of the subject as an integer. Assumes the name of the file ends in '*XXX.dat'
+
+    Args:
+        filename: The name of the `subjectXXX.dat` file.
+    
+    Example:
+        ```
+        print(get_subkect_id("subject101.dat")) # Prints 101
+        ```
     """
     filename = filename[:-4]
     return int(filename[-3:])
 
 
 def get_data_rows(file: str) -> list[SubjectRow]:
-    """
-    Parses a .dat file and returns a list of SubjectRow's.
+    """Parses a .dat file and returns a list of `SubjectRow`s.
+
+    Args:
+        file: The filepath to the `.dat` file that holds the subject data.
+
+    Returns:
+        A list of `SubjectRow`s.
     """
 
     dat: DataFrame = pd.read_csv(file, sep=" ")
@@ -55,16 +69,26 @@ def get_data_rows(file: str) -> list[SubjectRow]:
 
 
 def get_subject_data(file: str) -> SubjectData:
-    """
-    Parses and returns all the data of the .dat file as a SubjectData object.
+    """Parses and returns all the data of the `.dat` file as a `SubjectData` object.
+
+    Args:
+        file: The filepath to the `.dat` file that holds the subject data.
+    
+    Returns:
+        A `SubjectData` object for ease of accessing the data raws.
     """
     data_ls: list[SubjectRow] = get_data_rows(file)
     return SubjectData(get_subject_id(file), data_ls)
 
 
 def get_all_subjects_in_dir(dir: str) -> list[SubjectData]:
-    """
-    Parses and returns all the .dat files in 'dir' as a list of SubjectData objects.
+    """Parses and returns all the `.dat` files in 'dir' as a list of SubjectData objects.
+
+    Args:
+        dir: The parent directory which contains all the `subjectxx.dat` files.
+
+    Returns:
+        A list of `SubjectData` objects each representing a different `subjectxx.dat` file.
     """
     files: list[str] = [os.path.join(dir, f) for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
     
@@ -73,13 +97,20 @@ def get_all_subjects_in_dir(dir: str) -> list[SubjectData]:
         return_ls.append(get_subject_data(file))
     
     return return_ls
-from datetime import datetime
 
-def transform_subject_to_docs(subject_data: SubjectData,split_name: str) -> list[dict]:
-    """
-    Groups raw sequential rows into per-activity segments for the HAND IMU only
+
+def transform_subject_to_docs(subject_data: SubjectData, split_name: str) -> list[dict]:
+    """Groups raw sequential rows into per-activity segments for the HAND IMU only
     and outputs them matching the exact target MongoDB document schema.
+
+    Args:
+        subject_data: The SubjectData object.
+        split_name: The name of the split. 'Optional' or 'Protocol'
+    
+    Returns:
+        A list of dictionaries that are compatible with MongoDB document schemas.
     """
+    
     documents = []
     
     if not subject_data.data_rows:
