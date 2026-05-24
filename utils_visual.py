@@ -118,3 +118,58 @@ def plot_scatter_pca(
         ax.set_zlabel('Third Principal Component')
     else:
         print("The DataFrame has more than 4 columns.")
+
+def plot_scatter_pca1(
+        df: pd.DataFrame,
+        c_name: str,
+        cmap_set: str = "tab20",
+        class_names: list = None
+):
+    """Visualizes the values of the component columns of the DataFrame
+    according to its column that includes the labels.
+
+    Args:
+        df: The DataFrame that contains the transformed data after the PCA
+            procedure. Must have 2 or 3 component columns plus the label column.
+        c_name: The name of the column that includes the labels.
+        cmap_set: The colormap to use. Defaults to 'tab20' for distinct colors.
+        class_names: Optional list of class name strings for the legend.
+            If provided, integer labels are mapped to activity names.
+
+    Returns:
+
+    """
+    import matplotlib.cm as cm
+
+    unique_labels = sorted(df[c_name].unique())
+    colors = cm.get_cmap(cmap_set)(np.linspace(0, 1, len(unique_labels)))
+
+    if len(df.columns) == 3:
+        plt.style.use('classic')
+        plt.figure(figsize=(16, 8))
+        for label_int, color in zip(unique_labels, colors):
+            mask = df[c_name] == label_int
+            label_name = class_names[label_int] if class_names is not None else str(label_int)
+            plt.scatter(df[mask].iloc[:, 0], df[mask].iloc[:, 1],
+                        label=label_name, color=color, alpha=0.5, s=20)
+        plt.xlabel('First principal component')
+        plt.ylabel('Second Principal Component')
+        plt.legend(bbox_to_anchor=(1.05, 1), fontsize=9)
+        plt.tight_layout()
+
+    elif len(df.columns) == 4:
+        plt.style.use('classic')
+        fig = plt.figure(figsize=(16, 8))
+        ax = fig.add_subplot(111, projection='3d')
+        for label_int, color in zip(unique_labels, colors):
+            mask = df[c_name] == label_int
+            label_name = class_names[label_int] if class_names is not None else str(label_int)
+            ax.scatter(df[mask].iloc[:, 0], df[mask].iloc[:, 1], df[mask].iloc[:, 2],
+                       label=label_name, color=color, alpha=0.5, s=20)
+        ax.set_xlabel('First principal component')
+        ax.set_ylabel('Second Principal Component')
+        ax.set_zlabel('Third Principal Component')
+        ax.legend(bbox_to_anchor=(1.05, 1), fontsize=9)
+
+    else:
+        print("The DataFrame has more than 4 columns.")
