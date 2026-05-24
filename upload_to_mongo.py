@@ -1,15 +1,20 @@
+# This module was used for early testing.
+
 import os
 import yaml
 import pymongo
 
-
 from data_parser import get_subject_data, transform_subject_to_docs
 
+
 def load_config():
+    """Loads the config in `./config.yml`.
+    """
     with open("config.yml", "r", encoding="utf-8") as file:
         return yaml.load(file, Loader=yaml.FullLoader)
 
-def main():
+
+if __name__ == "__main__":
     config = load_config()
     
     client = pymongo.MongoClient(config["client"])
@@ -46,6 +51,3 @@ def main():
                 print(f"Synced: {file_name}\n")
 
     print("Success! All eligible data has been processed and uploaded to MongoDB.")
-
-if __name__ == "__main__":
-    main()

@@ -1,27 +1,42 @@
+"""An object oriented approach for storring the data of a `.dat` file in a python format.
+
+This implementation made converting the `.dat` files to MongoDB-Document compatible
+dictionies a lot more human readable.
+"""
+
 from numpy import float64
 
 
 class Vector3:
+    """A 3 dimensional vector that's used to hold the data of the readings.
+    """
+    
     x: float64
     y: float64
     z: float64
     
+
     def __init__(self, x: float64, y: float64, z: float64):
         self.x = x
         self.y = y
         self.z = z
     
+
     def __str__(self) -> str:
         return "(" + str(self.x) + ", " + str(self.y) + ", " + str(self.z) + ")"
 
 
 class IMUSensorData:
+    """A data object that holds the data for each IMU channel.
+    """
+    
     temperature: float64
     accelerometer_16: Vector3
     accelerometer_6: Vector3
     gyroscope: Vector3
     magnetometer: Vector3
     
+
     def __init__(self, temperature: float64, accelerometer_16: Vector3, accelerometer_6: Vector3, gyroscope: Vector3, magnetometer: Vector3):
         self.temperature = temperature
         self.accelerometer_16 = accelerometer_16
@@ -31,6 +46,9 @@ class IMUSensorData:
 
 
 class SubjectRow:
+    """A data object that holds the data for a complete row of a `.dat` file.
+    """
+
     timestamp: float64
     activity: float64
     # heart_rate: float64
@@ -38,6 +56,7 @@ class SubjectRow:
     imu_chest: IMUSensorData
     imu_ankle: IMUSensorData
     
+
     def __init__(self, timestamp: float64, activity: float64, imu_hand: IMUSensorData, imu_chest: IMUSensorData, imu_ankle: IMUSensorData):
         self.timestamp = timestamp
         self.activity = activity
@@ -45,6 +64,8 @@ class SubjectRow:
         self.imu_chest = imu_chest
         self.imu_ankle = imu_ankle
     
+
+    # Implementation of print(SubjectRow). Used for debugging during data parsing.
     def __str__(self):
         return_str: str = ""
         return_str += "timestamp\tactivity\timu_hand\t\t\t\t\timu_chest\t\t\t\t\timu_ankle\n"
@@ -58,9 +79,13 @@ class SubjectRow:
 
 
 class SubjectData:
+    """A data object that holds the complete data of a `.dat` file or subject. 
+    """
+
     id: int
     data_rows: list[SubjectRow]
     
+
     def __init__(self, id: int, data_rows: list[SubjectRow]):
         self.id = id
         self.data_rows = data_rows
