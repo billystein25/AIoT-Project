@@ -26,36 +26,43 @@ data_path: "C:\\Users\\user\\Documents\\ΠΑΝΕΠΙΣΤΗΜΙΟ\\LABAIOT\\AIoT-
 #--------------------- Data Engineering ----------------------
 # sliding window algorithm parameters
 sliding_window:
-  ws:
-  overlap:
+  ws: 500
+  overlap: 250
   w_type: "hann"
   w_center: True
-  print_stats: True
+  print_stats: False
 
 # window to handle for visualization purposes
 x_number: 2
 
 # filtering parameterization
 filter:
-  order:
-  wn:
+  order: 5
+  wn: 0.3
   type: "lowpass"
 
 
 #--------------------- $ Data Preparation ----------------------
 # Dimensionality reduction
 PCA:
-  n_comp:
+  n_comp: 13
 
 
 #--------------------- Learning ----------------------
 # Classifier - Statistical
 classifier:
   SVC:
-    C:
+    C: 10
     kernel: "rbf"
-    gamma:
-  # classifier 2
+    gamma: "scale"
+   
+classifier_2:
+  RFC:
+      n_estimators: 100
+      max_depth: 
+      max_features: "sqrt"
+      random_state: 42
+      n_jobs: -1
     # put your other Statistical-related classifier params here
   # classifier 3
     # put your other Statistical-related classifier params here
@@ -68,3 +75,13 @@ fine_tune:
    ]
   cv: 5
   verbose: 1
+
+fine_tune_rf:
+  param_grid: [
+    {'n_estimators': [100, 200, 300],
+     'max_depth': [null, 10, 20],
+     'max_features': ['sqrt', 'log2']}
+  ]
+  cv: 5
+  verbose: 1  
+  n_jobs: -1
