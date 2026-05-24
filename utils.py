@@ -296,3 +296,90 @@ def filter_pairs(windowpairs, config):
         filtered_list.append(filtered_df)
     return filtered_list
 
+def extract_features(df: pd.DataFrame) -> dict:
+    """Extracts statistical features from a single window DataFrame.
+
+    Computes time-domain statistical features for each axis column
+    independently. These features capture the movement pattern of
+    each window in a compact and meaningful way for classification.
+
+    Args:
+        df: DataFrame of shape (ws, n_axes) representing one window.
+            Columns should be axis names e.g. acc_x, acc_y, acc_z,
+            gyr_x, gyr_y, gyr_z.
+
+    Returns:
+        Dict of feature_name -> float value. Feature names follow
+        the pattern '{axis}_{feature}' e.g. 'acc_x_mean', 'gyr_z_std'.
+        Total features = n_axes × 9 = 54 for 6-axis IMU data.
+
+    Example:
+        >>> features = extract_features(filtered_list[0])
+        >>> print(len(features))   # 54
+        >>> print(list(features.keys())[:5])
+        ['acc_x_mean', 'acc_x_std', 'acc_x_min', 'acc_x_max', 'acc_x_median']
+    """
+    features = {}
+    for col in df.columns:
+        s = df[col]
+        #Time-domain features 
+        features[f"{col}_mean"]     = s.mean()
+        features[f"{col}_std"]      = s.std()
+        features[f"{col}_min"]      = s.min()
+        features[f"{col}_max"]      = s.max()
+        features[f"{col}_median"]   = s.median()
+        features[f"{col}_energy"]   = (s ** 2).mean()
+        features[f"{col}_iqr"]      = s.quantile(0.75) - s.quantile(0.25)
+        features[f"{col}_skew"]     = s.skew()
+        features[f"{col}_kurtosis"] = s.kurtosis()
+        
+        #Frequency-domain features
+        arr    = s.to_numpy()
+        n      = len(arr)
+        fs     = 100  # sampling frequency Hz
+        
+        # FFT
+        fft_vals = np.abs(np.fft.rfft(arr))
+        freqs    = np.fft.rfftfreq(n, d=1/fs)
+        
+        # dominant frequency — where most energy is
+        features[f"{col}_dom_freq"]      = freqs[np.argmax(fft_vals)]
+        
+        # spectral energy — total power in frequency domain
+        features[f"{col}_spec_energy"]   = np.sum(fft_vals ** 2) / n
+        
+        # spectral entropy — how spread out the energy is
+        psd = fft_vals ** 2
+        psd_norm = psd / (np.sum(psd) + 1e-10)
+        features[f"{col}_spec_entropy"]  = -np.sum(
+            psd_norm * np.log2(psd_norm + 1e-10))
+        
+        # mean frequency — weighted average frequency
+        features[f"{col}_mean_freq"]     = np.sum(
+            freqs * psd) / (np.sum(psd) + 1e-10)
+
+    return features
+    
+
+
+def build_feature_matrix(filtered_list: list) -> pd.DataFrame:
+    """Builds a 2D feature matrix from a list of filtered window DataFrames.
+
+    Applies extract_features to every window and stacks the results
+    into a single DataFrame where each row is one window and each
+    column is one feature.
+
+    Args:
+        filtered_list: List of filtered DataFrames from filter_pairs().
+
+    Returns:
+        DataFrame of shape (n_windows, n_features) e.g. (11242, 54).
+
+    Example:
+        >>> X_train_fe = build_feature_matrix(filtered_training_list)
+        >>> print(X_train_fe.shape)   # (11242, 54)
+    """
+    features_list = []
+    for df in filtered_list:
+        features_list.append(extract_features(df))
+    return pd.DataFrame(features_list)
