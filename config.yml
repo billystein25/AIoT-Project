@@ -9,6 +9,10 @@ db: "aiot_monitoring_db"
 col: "tracking_data"
 
 
+#-------------------------- Dataset Loading -------------------------
+splits: ["Protocol"] # options: Protocol | Optional
+
+
 #--------------------- Dataframe Instantiation ----------------------
 # Dataframe columns list
 order: ["X", "Y", "Z"]
