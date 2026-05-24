@@ -74,3 +74,6 @@ The final notebook is `aiot_project_feature_engineering.ipynb`. The fetching of 
 We decided to evaluate the protocol activities dataset for the hand position of the IMU with the ±16g Accelerometer and Gyroscope sensors. The activities contained in the Protocol section are the following: `Nordic walking`, `ascending stairs`, `cycling`, `descending stairs`, `ironing`, `lying`, `rope jumping`, `running`, `sitting`, `standing`, `vacuum cleaning`, `walking`. 
 Subjects in the range [101~105] and [107] were used for training purposes, while the subjects' 106, 108, 109 activities for testing purposes.
 
+# Results
+Results of both `aiot_project_time_series.ipynb` and `aiot_project_feature_engineering.ipynb` can be found in the [`img` Folder](img). 
+
